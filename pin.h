@@ -23,9 +23,20 @@
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
 #define NOP() __no_operation()
 #define PIN2PIN(p) ((p) & 0x7)
-#define PIN2REG_PIN(p) (((p)>>4)?(PIND):(((p)>>3)?(PINC):(PINB)))
+#define PIN2REG_PIN(p)  (((p)>>4)?(PIND):(((p)>>3)?(PINC):(PINB)))
 #define PIN2REG_PORT(p) (((p)>>4)?(PORTD):(((p)>>3)?(PORTC):(PORTB)))
-#define PIN2REG_DDR(p) (((p)>>4)?(DDRDD):(((p)>>3)?(DDRC):(DDRB)))
+#define PIN2REG_DDR(p)  (((p)>>4)?(DDRDD):(((p)>>3)?(DDRC):(DDRB)))
+#elif defined(__MSP430__)
+#define NOP() __no_operation()
+#define PIN2PIN(p) ((p) & 0x7)
+#define PIN2REG_SEL(p) (((p)>>4)?(P3SEL):(((p)>>3)?(P2SEL):(P1SEL))) //!< activate special function (GPIO=0, special=1)
+#define PIN2REG_DIR(p) (((p)>>4)?(P3DIR):(((p)>>3)?(P2DIR):(P1DIR))) //!< direction of port (input=0, output=1)
+#define PIN2REG_IN(p)  (((p)>>4)?(P3IN):(((p)>>3)?(P2IN):(P1IN)))    //!< input
+#define PIN2REG_OUT(p) (((p)>>4)?(P3OUT):(((p)>>3)?(P2OUT):(P1OUT))) //!< output (in input mode pull up=1, down=0)
+#define PIN2REG_REN(p) (((p)>>4)?(P3REN):(((p)>>3)?(P2REN):(P1REN))) //!< pull up/down resistor enabled (controlled by P*OUT)
+#define PIN2REG_IE(p)  (((p)>>4)?(P3IE):(((p)>>3)?(P2IE):(P1IE)))    //!< interrupts enabled for pin
+#define PIN2REG_IES(p) (((p)>>4)?(P3IES):(((p)>>3)?(P2IES):(P1IES))) //!< interrupts triggered on falling edge
+#define PIN2REG_IFG(p) (((p)>>4)?(P3IFG):(((p)>>3)?(P2IFG):(P1IFG))) //!< what pin interrupt was triggered (interrupt can be triggered by writing to this reg)
 #endif
 
 
@@ -39,10 +50,23 @@ typedef enum {
 
 #if defined(__AVR__) || (__GCC_AVR32__)
 typedef enum {
+	PIN_MODE_OUTPUT,
+	PIN_MODE_INPUT,
+	PIN_MODE_INPUT_PULLUP
+} pin_mode_t;
+#elif defined(__MSP430__)
+typedef enum {
+	PIN_MODE_OUTPUT,
 	PIN_MODE_INPUT,
 	PIN_MODE_INPUT_PULLUP,
-	PIN_MODE_OUTPUT
+	PIN_MODE_INPUT_PULLDOWN
 } pin_mode_t;
+
+typedef enum {
+	PIN_INTERRUPT_MODE_OFF,
+	PIN_INTERRUPT_MODE_RISING_EDGE,
+	PIN_INTERRUPT_MODE_FALLING_EDGE
+} pin_interrupt_mode_t;
 #endif
 
 
@@ -138,6 +162,31 @@ typedef enum {
 	PIN_ARDUINO_A4 = PIN_C4,
 	PIN_ARDUINO_A5 = PIN_C5,
 #endif
+#elif defined(__MSP430__)
+	PIN_1_0 = 0,
+	PIN_1_1 = 1,
+	PIN_1_2 = 2,
+	PIN_1_3 = 3,
+	PIN_1_4 = 4,
+	PIN_1_5 = 5,
+	PIN_1_6 = 6,
+	PIN_1_7 = 7,
+	PIN_2_0 = 8,
+	PIN_2_1 = 9,
+	PIN_2_2 = 10,
+	PIN_2_3 = 11,
+	PIN_2_4 = 12,
+	PIN_2_5 = 13,
+	PIN_2_6 = 14,
+	PIN_2_7 = 15,
+	PIN_3_0 = 16,
+	PIN_3_1 = 17,
+	PIN_3_2 = 18,
+	PIN_3_3 = 19,
+	PIN_3_4 = 20,
+	PIN_3_5 = 21,
+	PIN_3_6 = 22,
+	PIN_3_7 = 23,
 #endif
 	PIN_AMOUNT
 } pin_t;

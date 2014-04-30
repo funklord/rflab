@@ -6,6 +6,8 @@ pin_state_t read_pin(pin_t pin)
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
 	//NOP();
 	return(READ_BIT(PIN2REG_PIN(pin), PIN2PIN(pin)));
+#elif defined(__MSP430__)
+	return(READ_BIT(PIN2REG_IN(pin), PIN2PIN(pin)));
 #endif
 }
 
@@ -14,6 +16,8 @@ void write_pin(pin_t pin, pin_state_t state)
 {
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
 	WRITE_BIT(PIN2REG_PORT(pin), PIN2PIN(pin), state);
+#elif defined(__MSP430__)
+	WRITE_BIT(PIN2REG_OUT(pin), PIN2PIN(pin), state);
 #endif
 }
 
@@ -22,6 +26,8 @@ void toggle_pin(pin_t pin)
 {
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
 	SET_BIT(PIN2REG_PIN(pin), PIN2PIN(pin));
+#elif defined(__MSP430__)
+	PIN2REG_OUT(pin) ^= PIN2PIN(pin);
 #endif
 }
 
@@ -32,6 +38,24 @@ void pin_mode(pin_t pin, pin_mode_t mode)
 	WRITE_BIT(PIN2REG_DDR(pin), PIN2PIN(pin), (mode == PIN_MODE_OUTPUT));
 	if(mode != PIN_MODE_OUTPUT)
 		WRITE_BIT(PIN2REG_PORT(pin), PIN2PIN(pin), (mode == PIN_MODE_INPUT_PULLUP));
+}
+#elif defined(__MSP430__)
+void pin_mode(pin_t pin, pin_mode_t mode)
+{
+	WRITE_BIT(PIN2REG_DIR(pin), PIN2PIN(pin), (mode == PIN_MODE_OUTPUT));
+	if(mode != PIN_MODE_OUTPUT) {
+		WRITE_BIT(PIN2REG_REN(pin), PIN2PIN(pin), (mode != PIN_MODE_INPUT));
+		if(mode != PIN_MODE_INPUT
+			WRITE_BIT(PIN2REG_OUT(pin), PIN2PIN(pin), (mode == PIN_MODE_INPUT_PULLUP));
+	}
+}
+
+
+void pin_interrupt_mode(pin_t pin, pin_interrupt_mode_t mode)
+{
+	WRITE_BIT(PIN2REG_IE(pin), PIN2PIN(pin), (mode != PIN_INTERRUPT_MODE_OFF));
+	if(mode != PIN_INTERRUPT_MODE_OFF)
+		WRITE_BIT(PIN2REG_IES(pin), PIN2PIN(pin), (mode == PIN_INTERRUPT_MODE_FALLING_EDGE));
 }
 #endif
 
