@@ -35,7 +35,7 @@ void print_levels_of_binary_code(uint8_t *buf, int len)
 {
 	int i;
 	for(i=0;i<len;i++)
-		printf("%d       ", i);
+		printf("%-8d", i);
 	printf("\n");
 	for(i=0;i<len;i++)
 		printf("%s", int_to_binary_level_string_l2r(buf[i], 8));

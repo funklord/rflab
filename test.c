@@ -88,8 +88,8 @@ int main(void)
 		r = manchester_check_byte(byte);
 		printf("manchester_check_byte: %s\n", r ? "valid" : "invalid manchester data");
 		//if(r) {
-			r = manchester_encode_nibble(byte);
-			r2 = manchester_decode_byte(r);
+			r = manchester_encode_nibble(byte&0x0f);
+			r2 = manchester_decode_nibble(r);
 			printf("manchester_encode_nibble:                %s", int_to_binary_string(r, 8));
 			printf(" decode: %s %s\n", int_to_binary_string(r2,4), (r2 == (byte>>4)) ? "ok" : "fail");
 
@@ -117,7 +117,7 @@ int main(void)
 
 	}
 	//test random array encoding
-#define TEST_ARRAY_LEN 8
+#define TEST_ARRAY_LEN 32
 	uint8_t test_array[TEST_ARRAY_LEN];
 	printf("Testing random array\n");
 	for(i=0;i<TEST_ARRAY_LEN;i++)

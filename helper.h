@@ -48,6 +48,26 @@
 #define LOOP_UNTIL_BIT_SET(p, n) while(!((p) & BIT(n)));
 #define LOOP_UNTIL_BIT_CLR(p, n) while((p) & BIT(n));
 
+
+#if defined(__Si102x__)
+
+#define SFRPAGE_LEGACY() SFRPAGE=LEGACY_PAGE
+#define SFRPAGE_02() SFRPAGE=0x02
+#ifdef CONFIG_SFRPAGE_RESTORE
+#define CONFIG_SFRPAGE_TMPVAR sfrpage_tmp
+#define SFRPAGE_STORE() uint8_t CONFIG_SFRPAGE_TMPVAR=SFRPAGE
+#define SFRPAGE_RESTORE() SFRPAGE=CONFIG_SFRPAGE_TMPVAR;
+#elif CONFIG_SFRPAGE_RETURN_TO_LEGACY
+#define SFRPAGE_STORE() (0)
+#define SFRPAGE_RESTORE() SFRPAGE_LEGACY()
+#else
+#define SFRPAGE_STORE() (0)
+#define SFRPAGE_RESTORE() (0)
+#endif
+
+#endif
+
+
 char *int_to_binary_string(int num, uint_fast8_t len);
 char *int_to_binary_string_l2r(int num, uint_fast8_t len);
 char *int_to_binary_level_string_l2r(int num, uint_fast8_t len);
