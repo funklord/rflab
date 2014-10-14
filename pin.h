@@ -29,7 +29,6 @@
 #define PIN2REG_PORT(p) (((p)>>4)?(PORTD):(((p)>>3)?(PORTC):(PORTB)))
 #define PIN2REG_DDR(p)  (((p)>>4)?(DDRDD):(((p)>>3)?(DDRC):(DDRB)))
 #elif defined(__MSP430__)
-#define NOP() __no_operation()
 #define PIN2PIN(p) ((p) & 0x7)
 #define PIN2REG_SEL(p) (((p)>>4)?(P3SEL):(((p)>>3)?(P2SEL):(P1SEL))) //!< activate special function (GPIO=0, special=1)
 #define PIN2REG_DIR(p) (((p)>>4)?(P3DIR):(((p)>>3)?(P2DIR):(P1DIR))) //!< direction of port (input=0, output=1)
