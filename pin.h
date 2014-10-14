@@ -8,8 +8,10 @@
 #endif
 
 #if defined(__AVR__)
-#define ei() sei() //!< enable interrupts
-#define di() cli() //!< disable interrupts
+//#define ei() sei() //!< enable interrupts
+//#define di() cli() //!< disable interrupts
+#define di() __asm volatile( "cli" ::: "memory" ) //!< memory barrier, at least avoids potential problems with volatile memory
+#define ei() __asm volatile( "sei" ::: "memory" ) //!< no solution exists for non-volatile access...
 #endif
 
 #ifdef __ARDUINO__
