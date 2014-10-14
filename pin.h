@@ -3,7 +3,7 @@
 
 
 //#if !defined(__AVR__) && !defined(__GCC_AVR32__)
-#if !defined(__AVR_ATmega328P__) || !defined(__AVR_ATmega328__)
+#if !defined(__AVR_ATmega328P__) || !defined(__AVR_ATmega328__) || !defined(__MSP430__)
 #error unsupported platform
 #endif
 
@@ -194,8 +194,11 @@ typedef enum {
 pin_state_t read_pin(pin_t pin);
 void write_pin(pin_t pin, pin_state_t state);
 void toggle_pin(pin_t pin);
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) || defined(__MSP430__)
 void pin_mode(pin_t pin, pin_mode_t mode);
+#endif
+#if defined(__MSP430__)
+void pin_interrupt_mode(pin_t pin, pin_interrupt_mode_t mode);
 #endif
 uint_fast16_t get_pulse_length(pin_t pin, pin_state_t state, uint_fast16_t timeout);
 
