@@ -276,7 +276,7 @@ void differential_manchester_encode_buf(uint8_t *dest, bool prev, const uint8_t 
 //! decode a differential manchester sequence where transition=0
 
 //! @param prev last bit of previous sequence
-uint_fast8_t differential_manchester_decode_byte(bool prev, uint_fast8_t in)
+uint_fast8_t differential_manchester_decode_nibble(bool prev, uint_fast8_t in)
 {
 	uint_fast8_t out=0, i;
 	for(i=0;i<4;i++) {
@@ -394,7 +394,7 @@ bool bmc_check_buf(bool prev, uint8_t *buf, int len)
 
 #ifdef CONFIG_BMC_DEC
 //! decode a bmc sequence byte into nibble
-uint_fast8_t bmc_decode_byte(uint_fast8_t in)
+uint_fast8_t bmc_decode_nibble(uint_fast8_t in)
 {
 	uint_fast8_t out=0, i;
 	for(i=0;i<8;i+=2) {
